@@ -1,6 +1,6 @@
 package storage
 
-import "github.com/jmillerv/analect/models"
+import "github.com/jmillerv/analect/internal/models"
 
 type Local struct {
 	Path string

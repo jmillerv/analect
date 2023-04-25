@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+	"github.com/jmillerv/analect/internal/gui/panels"
 )
 
 func createMainContainer() fyne.CanvasObject {
@@ -22,9 +23,9 @@ func createMainContainer() fyne.CanvasObject {
 }
 
 func createTabContainer() *container.AppTabs {
-	quoteTab := container.NewTabItem("Quote", createForm())
-	archiveTab := container.NewTabItem("Archive", createArchive())
-	aboutTab := container.NewTabItem("About", createAbout())
+	quoteTab := container.NewTabItem("Quote", panels.QuoteForm())
+	archiveTab := container.NewTabItem("Archive", panels.Archive())
+	aboutTab := container.NewTabItem("About", panels.About())
 
 	tabContainer := container.NewAppTabs(quoteTab, archiveTab, aboutTab)
 

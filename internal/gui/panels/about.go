@@ -1,4 +1,4 @@
-package ui
+package panels
 
 import (
 	"fyne.io/fyne/v2"
@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func createAbout() fyne.CanvasObject {
+func About() fyne.CanvasObject {
 	// Create the widgets to display information
 	title := widget.NewLabel("Analect")
 	version := widget.NewLabel("Version: 1.0")

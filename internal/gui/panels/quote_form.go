@@ -1,4 +1,4 @@
-package ui
+package panels
 
 import (
 	"fyne.io/fyne/v2"
@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func createForm() fyne.CanvasObject {
+func QuoteForm() fyne.CanvasObject {
 	authorEntry := widget.NewEntry()
 	quoteEntry := widget.NewEntry()
 	citationEntry := widget.NewEntry()

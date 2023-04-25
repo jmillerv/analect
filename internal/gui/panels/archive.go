@@ -1,4 +1,4 @@
-package ui
+package panels
 
 import (
 	"fyne.io/fyne/v2"
@@ -9,7 +9,7 @@ import (
 
 var quotes []models.Quote
 
-func createArchive() fyne.CanvasObject {
+func Archive() fyne.CanvasObject {
 	searchBar := widget.NewEntry()
 	searchBar.SetPlaceHolder("Search quotes")
 

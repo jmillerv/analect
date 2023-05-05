@@ -6,8 +6,10 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/jmillerv/analect/internal/models"
+	"github.com/jmillerv/analect/internal/storage"
 )
 
 func QuoteForm(w fyne.Window) fyne.CanvasObject {
@@ -35,16 +37,36 @@ func QuoteForm(w fyne.Window) fyne.CanvasObject {
 }
 
 func saveJSONData(w fyne.Window, author, quote, citation, link string) {
-	// get current window
+	// load existing data
+	quoteList, err := loadQuotes(w)
+	if err != nil {
+		dialog.ShowError(err, w)
+	}
 
 	// Create a new QuoteObject and append it to the JSON array
 	quoteObj := models.Quote{Author: author, Quote: quote, Citation: citation, Link: link}
-	data, err := json.Marshal(quoteObj)
+	quoteList.AddQuote(&quoteObj)
+	data, err := json.MarshalIndent(quoteList, "", "  ") // marshall the json in a more readable format
 	if err != nil {
 		log.Println("Error marshaling JSON:", err)
 		return
 	}
 
 	// Save the JSON array to the file
-	saveData(w, data)
+	storage.SaveData(w, data)
+}
+
+func loadQuotes(w fyne.Window) (*models.QuoteList, error) {
+	data, err := storage.LoadData(w)
+	if err != nil {
+		return nil, err
+	}
+
+	var quotes models.QuoteList
+	err = json.Unmarshal(data, &quotes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &quotes, nil
 }

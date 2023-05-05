@@ -46,12 +46,9 @@ func Archive(w fyne.Window) fyne.CanvasObject {
 		// filter the quotes based on the search term
 		updateList()
 	}
+	quoteList.Resize(fyne.NewSize(200, 400))
 
-	listContainer := container.NewScroll(quoteList)
-	archiveContainer := container.NewVBox(
-		searchBar,
-		listContainer,
-	)
+	archiveContainer := container.NewBorder(searchBar, nil, nil, nil, quoteList)
 
 	return archiveContainer
 }

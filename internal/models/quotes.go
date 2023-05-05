@@ -10,3 +10,7 @@ type Quote struct {
 type QuoteList struct {
 	Quotes []Quote `json:"quotes"`
 }
+
+func (ql *QuoteList) AddQuote(quote *Quote) {
+	ql.Quotes = append(ql.Quotes, *quote)
+}

@@ -24,7 +24,7 @@ func createMainContainer(window fyne.Window) fyne.CanvasObject {
 
 func createTabContainer(w fyne.Window) *container.AppTabs {
 	quoteTab := container.NewTabItem("Quote", panels.QuoteForm(w))
-	archiveTab := container.NewTabItem("Archive", panels.Archive())
+	archiveTab := container.NewTabItem("Archive", panels.Archive(w))
 	cloudTab := container.NewTabItem("Cloud Settings", nil)
 	aboutTab := container.NewTabItem("About", panels.About())
 

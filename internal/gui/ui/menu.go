@@ -14,7 +14,7 @@ func createSideMenu(mainContent *fyne.Container, w fyne.Window) fyne.CanvasObjec
 	})
 
 	archiveBtn := widget.NewButton("Archive", func() {
-		mainContent.Objects = []fyne.CanvasObject{panels.Archive()}
+		mainContent.Objects = []fyne.CanvasObject{panels.Archive(w)}
 		mainContent.Refresh()
 	})
 

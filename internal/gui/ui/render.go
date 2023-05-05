@@ -13,13 +13,14 @@ const (
 )
 
 func Render() {
-	a := app.NewWithID("com.jmillerv.daily")
+	a := app.NewWithID("com.jmillerv.analect")
+
 	w := a.NewWindow("Analect - a cross-platform app for preserving quotes")
 
 	w.SetMaster()
 
 	w.Resize(fyne.Size{Width: 800, Height: 560})
 
-	w.SetContent(createMainContainer())
+	w.SetContent(createMainContainer(w))
 	w.ShowAndRun()
 }

@@ -7,12 +7,12 @@ import (
 	"github.com/jmillerv/analect/internal/gui/panels"
 )
 
-func createMainContainer() fyne.CanvasObject {
+func createMainContainer(window fyne.Window) fyne.CanvasObject {
 	mainContent := container.New(layout.NewVBoxLayout())
-	sideMenu := createSideMenu(mainContent)
+	sideMenu := createSideMenu(mainContent, window)
 
 	if fyne.CurrentDevice().IsMobile() {
-		tabContainer := createTabContainer()
+		tabContainer := createTabContainer(window)
 		return tabContainer
 	} else {
 		return container.New(&FixedSideMenuLayout{MenuWidth: 200},
@@ -22,12 +22,13 @@ func createMainContainer() fyne.CanvasObject {
 	}
 }
 
-func createTabContainer() *container.AppTabs {
-	quoteTab := container.NewTabItem("Quote", panels.QuoteForm())
+func createTabContainer(w fyne.Window) *container.AppTabs {
+	quoteTab := container.NewTabItem("Quote", panels.QuoteForm(w))
 	archiveTab := container.NewTabItem("Archive", panels.Archive())
+	cloudTab := container.NewTabItem("Cloud Settings", nil)
 	aboutTab := container.NewTabItem("About", panels.About())
 
-	tabContainer := container.NewAppTabs(quoteTab, archiveTab, aboutTab)
+	tabContainer := container.NewAppTabs(quoteTab, archiveTab, cloudTab, aboutTab)
 
 	return tabContainer
 }

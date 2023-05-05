@@ -28,13 +28,29 @@ func Archive(w fyne.Window) fyne.CanvasObject {
 		},
 		func() fyne.CanvasObject {
 			// return a quote item template
-			label := widget.NewLabel("")
-			label.Wrapping = fyne.TextWrapWord
-			return label
+
+			// TODO investigate if a fyne table may be better for this UI
+			authorLabel := widget.NewLabel("")
+			authorLabel.Wrapping = fyne.TextWrapWord
+
+			quoteLabel := widget.NewLabel("")
+			quoteLabel.Wrapping = fyne.TextTruncate
+
+			citationLabel := widget.NewLabel("")
+			citationLabel.Wrapping = fyne.TextWrapOff
+
+			linkLabel := widget.NewLabel("")
+			linkLabel.Wrapping = fyne.TextWrapOff
+
+			return container.NewGridWithColumns(4, authorLabel, quoteLabel, citationLabel, linkLabel)
 		},
 		func(i widget.ListItemID, c fyne.CanvasObject) {
 			// update the content of a quote item
-			c.(*widget.Label).SetText(filteredQuotes.Quotes[i].Quote)
+			grid := c.(*fyne.Container)
+			grid.Objects[0].(*widget.Label).SetText(filteredQuotes.Quotes[i].Author)
+			grid.Objects[1].(*widget.Label).SetText(filteredQuotes.Quotes[i].Quote)
+			grid.Objects[2].(*widget.Label).SetText(filteredQuotes.Quotes[i].Citation)
+			grid.Objects[3].(*widget.Label).SetText(filteredQuotes.Quotes[i].Link)
 		},
 	)
 	updateList := func() {

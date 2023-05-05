@@ -7,9 +7,9 @@ import (
 	"github.com/jmillerv/analect/internal/gui/panels"
 )
 
-func createSideMenu(mainContent *fyne.Container) fyne.CanvasObject {
+func createSideMenu(mainContent *fyne.Container, w fyne.Window) fyne.CanvasObject {
 	addQuoteBtn := widget.NewButton("Add Quote", func() {
-		mainContent.Objects = []fyne.CanvasObject{panels.QuoteForm()}
+		mainContent.Objects = []fyne.CanvasObject{panels.QuoteForm(w)}
 		mainContent.Refresh()
 	})
 
@@ -18,10 +18,14 @@ func createSideMenu(mainContent *fyne.Container) fyne.CanvasObject {
 		mainContent.Refresh()
 	})
 
+	storageBtn := widget.NewButton("Storage", func() {
+		panels.ShowFileLocationDialog(w)
+	})
+
 	aboutBtn := widget.NewButton("About", func() {
 		mainContent.Objects = []fyne.CanvasObject{panels.About()}
 		mainContent.Refresh()
 	})
 
-	return container.NewVBox(addQuoteBtn, archiveBtn, aboutBtn)
+	return container.NewVBox(addQuoteBtn, archiveBtn, storageBtn, aboutBtn)
 }

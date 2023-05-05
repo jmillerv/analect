@@ -1,19 +1,23 @@
 package panels
 
 import (
+	"encoding/json"
+	"log"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	"github.com/jmillerv/analect/internal/models"
 )
 
-func QuoteForm() fyne.CanvasObject {
+func QuoteForm(w fyne.Window) fyne.CanvasObject {
 	authorEntry := widget.NewEntry()
 	quoteEntry := widget.NewEntry()
 	citationEntry := widget.NewEntry()
 	linkEntry := widget.NewEntry()
 
 	saveButton := widget.NewButton("Save", func() {
-		saveJSONData(authorEntry.Text, quoteEntry.Text, citationEntry.Text, linkEntry.Text)
+		saveJSONData(w, authorEntry.Text, quoteEntry.Text, citationEntry.Text, linkEntry.Text)
 	})
 
 	form := &widget.Form{
@@ -30,17 +34,17 @@ func QuoteForm() fyne.CanvasObject {
 	return container.NewVBox(form)
 }
 
-func saveJSONData(author, quote, citation, link string) {
-	// Load the data from dropbox
+func saveJSONData(w fyne.Window, author, quote, citation, link string) {
+	// get current window
 
 	// Create a new QuoteObject and append it to the JSON array
-	// quoteObj := models.Quote{Author: author, Quote: quote, Citation: citation, Link: link}
-	// data, err := json.Marshal(quoteObj)
-	// if err != nil {
-	// 	log.Println("Error marshaling JSON:", err)
-	// 	return
-	// }
+	quoteObj := models.Quote{Author: author, Quote: quote, Citation: citation, Link: link}
+	data, err := json.Marshal(quoteObj)
+	if err != nil {
+		log.Println("Error marshaling JSON:", err)
+		return
+	}
 
-	// Save the JSON array to Dropbox
-	// saveToDropbox(data)
+	// Save the JSON array to the file
+	saveData(w, data)
 }

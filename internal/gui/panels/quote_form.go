@@ -3,6 +3,7 @@ package panels
 import (
 	"encoding/json"
 	"log"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -17,9 +18,10 @@ func QuoteForm(w fyne.Window) fyne.CanvasObject {
 	quoteEntry := widget.NewEntry()
 	citationEntry := widget.NewEntry()
 	linkEntry := widget.NewEntry()
+	tagEntry := widget.NewEntry()
 
 	saveButton := widget.NewButton("Save", func() {
-		saveJSONData(w, authorEntry.Text, quoteEntry.Text, citationEntry.Text, linkEntry.Text)
+		saveJSONData(w, authorEntry.Text, quoteEntry.Text, citationEntry.Text, linkEntry.Text, tagEntry.Text)
 	})
 
 	form := &widget.Form{
@@ -28,6 +30,7 @@ func QuoteForm(w fyne.Window) fyne.CanvasObject {
 			{Text: "Quote", Widget: quoteEntry},
 			{Text: "Citation", Widget: citationEntry},
 			{Text: "Link", Widget: linkEntry},
+			{Text: "Tags", Widget: tagEntry},
 		},
 		OnSubmit:   saveButton.OnTapped,
 		SubmitText: "Save",
@@ -36,15 +39,16 @@ func QuoteForm(w fyne.Window) fyne.CanvasObject {
 	return container.NewVBox(form)
 }
 
-func saveJSONData(w fyne.Window, author, quote, citation, link string) {
+func saveJSONData(w fyne.Window, author, quote, citation, link, tags string) {
 	// load existing data
 	quoteList, err := loadQuotes(w)
 	if err != nil {
 		dialog.ShowError(err, w)
 	}
 
+	separatedTags := strings.Split(tags, ",")
 	// Create a new QuoteObject and append it to the JSON array
-	quoteObj := models.Quote{Author: author, Quote: quote, Citation: citation, Link: link}
+	quoteObj := models.Quote{Author: author, Quote: quote, Citation: citation, Link: link, Tags: separatedTags}
 	quoteList.AddQuote(&quoteObj)
 	data, err := json.MarshalIndent(quoteList, "", "  ") // marshall the json in a more readable format
 	if err != nil {

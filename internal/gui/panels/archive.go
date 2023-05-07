@@ -118,13 +118,30 @@ func createQuotePopOut(w fyne.Window, quote models.Quote) fyne.CanvasObject {
 			modal.Hide()
 		}
 	})
+	// tags
+	tagCount := len(quote.Tags)
+	tagsTable := widget.NewTable(
+		func() (int, int) {
+			return tagCount, 1 // Number of rows is equal to the number of tags, only 1 column is needed.
+		},
+		func() fyne.CanvasObject {
+			return widget.NewLabel("") // Create a label for each cell in the table.
+		},
+		func(tableCell widget.TableCellID, c fyne.CanvasObject) {
+			tagLabel := c.(*widget.Label)
+			tagLabel.SetText(quote.Tags[tableCell.Row])
+		},
+	)
+	tableScroll := container.NewScroll(tagsTable)
+	tableScroll.SetMinSize(fyne.NewSize(100, 100))
 	// Set a minimum size for the quote label and wrap it with a ScrollContainer
 	scroll := container.NewScroll(quoteLabel)
-	scroll.SetMinSize(fyne.NewSize(400, 300))
+	scroll.SetMinSize(fyne.NewSize(400, 200))
 
 	content := container.NewVBox(
 		authorLabel,
 		scroll,
+		tableScroll,
 		linkLabel,
 		hideModal,
 	)

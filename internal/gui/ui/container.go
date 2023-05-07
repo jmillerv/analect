@@ -3,6 +3,7 @@ package ui
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/widget"
 	"github.com/jmillerv/analect/internal/gui/panels"
 )
 
@@ -21,7 +22,9 @@ func createMainContainer(window fyne.Window) fyne.CanvasObject {
 func createTabContainer(w fyne.Window) *container.AppTabs {
 	quoteTab := container.NewTabItem("Quote", panels.QuoteForm(w))
 	archiveTab := container.NewTabItem("Archive", panels.Archive(w))
-	cloudTab := container.NewTabItem("Cloud Settings", nil)
+	cloudTab := container.NewTabItem("Storage", widget.NewButton("Storage", func() {
+		panels.ShowFileLocationDialog(w)
+	}))
 	aboutTab := container.NewTabItem("About", panels.About())
 
 	tabContainer := container.NewAppTabs(quoteTab, archiveTab, cloudTab, aboutTab)

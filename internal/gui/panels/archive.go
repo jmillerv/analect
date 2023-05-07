@@ -1,12 +1,16 @@
 package panels
 
 import (
+	"net/url"
 	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/jmillerv/analect/internal/models"
+	"github.com/sirupsen/logrus"
 )
 
 func Archive(w fyne.Window) fyne.CanvasObject {
@@ -29,28 +33,38 @@ func Archive(w fyne.Window) fyne.CanvasObject {
 		func() fyne.CanvasObject {
 			// return a quote item template
 
-			// TODO investigate if a fyne table may be better for this UI
 			authorLabel := widget.NewLabel("")
 			authorLabel.Wrapping = fyne.TextWrapWord
 
-			quoteLabel := widget.NewLabel("")
-			quoteLabel.Wrapping = fyne.TextTruncate
+			// quoteLabel := widget.NewLabel("")
+			// quoteLabel.Wrapping = fyne.TextTruncate
 
-			citationLabel := widget.NewLabel("")
-			citationLabel.Wrapping = fyne.TextWrapOff
+			quoteButton := widget.NewButton("", func() {})
+			quoteButton.ExtendBaseWidget(quoteButton)
 
-			linkLabel := widget.NewLabel("")
-			linkLabel.Wrapping = fyne.TextWrapOff
+			linkLabel := widget.NewHyperlink("", nil)
+			linkLabel.Wrapping = fyne.TextWrapWord
 
-			return container.NewGridWithColumns(4, authorLabel, quoteLabel, citationLabel, linkLabel)
+			return container.New(layout.NewGridLayoutWithColumns(3), authorLabel, quoteButton, linkLabel)
 		},
 		func(i widget.ListItemID, c fyne.CanvasObject) {
 			// update the content of a quote item
 			grid := c.(*fyne.Container)
 			grid.Objects[0].(*widget.Label).SetText(filteredQuotes.Quotes[i].Author)
-			grid.Objects[1].(*widget.Label).SetText(filteredQuotes.Quotes[i].Quote)
-			grid.Objects[2].(*widget.Label).SetText(filteredQuotes.Quotes[i].Citation)
-			grid.Objects[3].(*widget.Label).SetText(filteredQuotes.Quotes[i].Link)
+			quoteButton := grid.Objects[1].(*widget.Button)
+			quoteButton.SetText(getFirst50Chars(filteredQuotes.Quotes[i].Quote))
+			quoteButton.SetIcon(theme.MenuExpandIcon())
+			quoteButton.OnTapped = func() {
+				dialog := createQuotePopOut(w, filteredQuotes.Quotes[i])
+				dialog.Show()
+			}
+			grid.Objects[2].(*widget.Hyperlink).SetText(filteredQuotes.Quotes[i].Link)
+			linkLabel := grid.Objects[2].(*widget.Hyperlink)
+			linkLabel.SetText(filteredQuotes.Quotes[i].Citation)
+			err := linkLabel.SetURLFromString(filteredQuotes.Quotes[i].Link)
+			if err != nil {
+				logrus.WithError(err).Error("unable to set link")
+			}
 		},
 	)
 	updateList := func() {
@@ -62,7 +76,6 @@ func Archive(w fyne.Window) fyne.CanvasObject {
 		// filter the quotes based on the search term
 		updateList()
 	}
-	quoteList.Resize(fyne.NewSize(200, 400))
 
 	archiveContainer := container.NewBorder(searchBar, nil, nil, nil, quoteList)
 
@@ -87,4 +100,43 @@ func searchQuotes(quotes []models.Quote, searchTerm string) *models.QuoteList {
 	return &models.QuoteList{
 		Quotes: filteredQuotes,
 	}
+}
+
+func createQuotePopOut(w fyne.Window, quote models.Quote) fyne.CanvasObject {
+	var modal *widget.PopUp
+
+	quoteHyperlink, err := url.Parse(quote.Link)
+	if err != nil {
+		logrus.WithError(err).Error("unable to parse quote link")
+	}
+	authorLabel := widget.NewLabel(quote.Author)
+	quoteLabel := widget.NewLabel(quote.Quote)
+	quoteLabel.Wrapping = fyne.TextWrapWord
+	linkLabel := widget.NewHyperlink(quote.Citation, quoteHyperlink)
+	hideModal := widget.NewButton("Close", func() {
+		if modal != nil {
+			modal.Hide()
+		}
+	})
+	// Set a minimum size for the quote label and wrap it with a ScrollContainer
+	scroll := container.NewScroll(quoteLabel)
+	scroll.SetMinSize(fyne.NewSize(400, 300))
+
+	content := container.NewVBox(
+		authorLabel,
+		scroll,
+		linkLabel,
+		hideModal,
+	)
+
+	modal = widget.NewModalPopUp(content, w.Canvas())
+	modal.Show()
+	return modal
+}
+
+func getFirst50Chars(s string) string {
+	if len(s) > 25 {
+		return s[:25]
+	}
+	return s
 }

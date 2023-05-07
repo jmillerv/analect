@@ -1,10 +1,11 @@
 package models
 
 type Quote struct {
-	Author   string `json:"author"`
-	Quote    string `json:"quote"`
-	Citation string `json:"citation"`
-	Link     string `json:"link"`
+	Author   string   `json:"author"`
+	Quote    string   `json:"quote"`
+	Citation string   `json:"citation"`
+	Link     string   `json:"link"`
+	Tags     []string `json:"tags"`
 }
 
 type QuoteList struct {

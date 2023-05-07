@@ -2,7 +2,10 @@ module github.com/jmillerv/analect
 
 go 1.19
 
-require fyne.io/fyne/v2 v2.3.3
+require (
+	fyne.io/fyne/v2 v2.3.3
+	github.com/sirupsen/logrus v1.8.1
+)
 
 require (
 	fyne.io/systray v1.10.1-0.20230312215936-7f71b037e260 // indirect

@@ -1,6 +1,8 @@
 package ui
 
-import "fyne.io/fyne/v2"
+import (
+	"fyne.io/fyne/v2"
+)
 
 type FixedSideMenuLayout struct {
 	MenuWidth int

@@ -3,6 +3,7 @@ package ui
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	_ "github.com/fyne-io/mobile/app" // import for mobile app
 )
 
 const (
